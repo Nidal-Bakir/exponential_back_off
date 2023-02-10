@@ -1,0 +1,12 @@
+name: example
+description: A sample command-line application.
+version: 1.0.0
+publish_to: none
+
+environment:
+  sdk: ">=2.17.0 <3.0.0"
+
+dependencies:
+  exponential_back_off:
+    path: ../
+  http: any
