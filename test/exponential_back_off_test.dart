@@ -82,27 +82,9 @@ void main() {
         interval * pow(2, 1) + interval * pow(2, 2);
     expect(expo.elapsedTime, equals(expectedPreciseSleepTime));
     expect(callCounter, equals(maxAttempts));
+    expect(expo.isProcessRunning(), isFalse);
   });
 
-  test(
-      'the computed delay should be equal to maxDelay in case the computed '
-      'delay is grater than the specified maxDelay', () {
-    // arrange
-    final interval = Duration(seconds: 99);
-    final maxDelay = Duration(seconds: 5);
-    final expo = ExponentialBackOff(
-      maxAttempts: 3,
-      interval: interval,
-      maxDelay: maxDelay,
-      maxRandomizationFactor: 0.15,
-    );
-
-    // act
-    final delay = expo.computeDelay(99, Duration.zero);
-
-    // assert
-    expect(delay, equals(maxDelay));
-  });
   test(
       'the computed delay should be equal to maxDelay in case the computed '
       'delay is grater than the specified maxDelay', () {
@@ -504,4 +486,93 @@ void main() {
     expect(result.getLeftValue(), isA<TextException>());
     expect(result.getLeftValue(), equals(exception));
   });
+
+  test(
+    'calling reset() and using the object agin should have a consistent behavior, '
+    'as it was called for the first time',
+    () async {
+      // arrange
+      final maxAttempts = 3;
+      final interval = Duration(milliseconds: 50);
+      final maxRandFactor = 0.15;
+      final expo = ExponentialBackOff(
+        maxAttempts: maxAttempts,
+        interval: interval,
+        maxDelay: Duration(seconds: 10),
+        maxRandomizationFactor: maxRandFactor,
+      );
+
+      int callCounter = 0;
+      int retryIfCallCounter = 0;
+
+      final exception = TextException('test throw');
+
+      // act
+      await expo.start(
+        () async {
+          ++callCounter;
+          throw exception;
+        },
+        retryIf: (error) {
+          ++retryIfCallCounter;
+          return true;
+        },
+      );
+
+      await expo.reset();
+      callCounter = 0;
+      retryIfCallCounter = 0;
+
+      await expo.start(
+        () async {
+          ++callCounter;
+          throw exception;
+        },
+        retryIf: (error) {
+          ++retryIfCallCounter;
+          return true;
+        },
+      );
+
+      // assert
+
+      expect(
+        expo.isProcessRunning(),
+        isFalse,
+        reason: 'The process should be stopped',
+      );
+
+      var expectedRawDelay = interval * pow(2, 1);
+      var maxRandomDelay = expectedRawDelay + expectedRawDelay * maxRandFactor;
+      var minRandomDelay = expectedRawDelay - expectedRawDelay * maxRandFactor;
+      expectedRawDelay = interval * pow(2, 2);
+      maxRandomDelay += expectedRawDelay + expectedRawDelay * maxRandFactor;
+      minRandomDelay += expectedRawDelay - expectedRawDelay * maxRandFactor;
+
+      expect(
+        expo.elapsedTime.inMilliseconds,
+        inInclusiveRange(
+          minRandomDelay.inMilliseconds,
+          maxRandomDelay.inMilliseconds,
+        ),
+      );
+
+      expect(
+        expo.attemptCounter,
+        equals(maxAttempts),
+        reason: 'The attemptCounter should be 3',
+      );
+
+      expect(
+        callCounter,
+        equals(maxAttempts),
+        reason: 'The callCounter should be 3',
+      );
+      expect(
+        retryIfCallCounter,
+        equals(maxAttempts - 1),
+        reason: 'The retryIfCallCounter should be 3',
+      );
+    },
+  );
 }
