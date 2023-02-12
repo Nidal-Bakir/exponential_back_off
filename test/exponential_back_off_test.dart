@@ -78,9 +78,17 @@ void main() {
     });
 
     // assert
-    final expectedPreciseSleepTime =
-        interval * pow(2, 1) + interval * pow(2, 2);
-    expect(expo.elapsedTime, equals(expectedPreciseSleepTime));
+    final expectedPreciseSleepTimeMillis =
+        (interval * pow(2, 1) + interval * pow(2, 2)).inMilliseconds;
+
+    expect(
+      expo.elapsedTime.inMilliseconds,
+      inInclusiveRange(
+        expectedPreciseSleepTimeMillis,
+        expectedPreciseSleepTimeMillis +
+            100, // + ~100 the natural processing time of the code
+      ),
+    );
     expect(callCounter, equals(maxAttempts));
     expect(expo.isProcessRunning(), isFalse);
   });
