@@ -15,8 +15,8 @@ abstract class BackOff {
   final Duration maxDelay;
 
   BackOff({
-    required this.maxDelay,
-    this.maxAttempts,
+    this.maxDelay = const Duration(seconds: 30),
+    this.maxAttempts = 10,
     this.maxElapsedTime,
   }) : assert(maxAttempts != null || maxElapsedTime != null,
             'Can not have both maxAttempts and maxElapsedTime null');
@@ -40,7 +40,17 @@ abstract class BackOff {
     ++_attemptCounter;
   }
 
-  bool _isStopped = false;
+  bool _isProcessRunning = false;
+
+  bool isProcessStopped() {
+    return !_isProcessRunning;
+  }
+
+  bool isProcessRunning() {
+    return _isProcessRunning;
+  }
+
+  bool _isForceStop = false;
 
   /// Stop the all the work
   ///
@@ -50,33 +60,27 @@ abstract class BackOff {
   /// @mustCallSuper
   Future<void> stop() async {
     await _cancelableOperation?.cancel();
-    _isStopped = true;
-  }
-
-  bool isProcessStopped() {
-    return _isStopped;
-  }
-
-  bool isProcessRunning() {
-    return !_isStopped;
+    _isForceStop = true;
+    _isProcessRunning = false;
   }
 
   bool _shouldStop({Duration? nextDelay}) {
-    if (_isStopped) return true;
+    var shouldStop = _isForceStop;
 
     if (_cancelableOperation != null) {
-      _isStopped |= _cancelableOperation!.isCanceled;
+      shouldStop |= _cancelableOperation!.isCanceled;
     }
 
     if (maxAttempts != null) {
-      _isStopped |= _attemptCounter >= maxAttempts!;
+      shouldStop |= _attemptCounter >= maxAttempts!;
     }
 
     if (maxElapsedTime != null && nextDelay != null) {
-      _isStopped |= _elapsedTime + nextDelay >= maxElapsedTime!;
+      shouldStop |= _elapsedTime + nextDelay >= maxElapsedTime!;
     }
-
-    return _isStopped;
+    
+    _isProcessRunning = !shouldStop;
+    return shouldStop;
   }
 
   /// Call`stop()`and reset everything to zero.
@@ -87,6 +91,8 @@ abstract class BackOff {
     _attemptCounter = 0;
     _elapsedTime = Duration.zero;
     _currentDelay = Duration.zero;
+    _isForceStop = false;
+    _isProcessRunning = false;
   }
 
   /// Calculates the next back off interval given an [attempt] and [elapsedTime].
@@ -94,12 +100,26 @@ abstract class BackOff {
 
   CancelableOperation? _cancelableOperation;
 
+  /// Keep Calling [proc] as long as:
+  /// * Calling [proc] throws exception.
+  /// * [retryIf] returns `true` for the thrown exception. if provided.
+  /// * [attemptCounter] not equals [maxAttempts] if provided.
+  /// * [elapsedTime] not equals [maxElapsedTime] if provided.
+  /// * the process not explicitly stopped using [stop] or [reset].
+  ///
+  /// At every retry the [onRetry] function will be called (if given).
+  ///
+  /// Returns Either:
+  /// * [Left]  [Exception]
+  /// * [Right]  [T]
   Future<Either<Exception, T>> start<T>(
     Future<T> Function() proc, {
     FutureOr<bool> Function(Exception error)? retryIf,
     FutureOr<void> Function(Exception error)? onRetry,
   }) async {
     assert(attemptCounter == 0, 'Did you forget to call reset() ?');
+
+    _isProcessRunning = true;
 
     while (true) {
       _incrementAttemptCounter();
@@ -109,7 +129,7 @@ abstract class BackOff {
         final result = await _cancelableOperation!
             .valueOrCancellation(const IgnoredProcess());
 
-        _isStopped = true;
+        _isProcessRunning = false;
 
         if (_cancelableOperation!.isCanceled) {
           return Left(result);
@@ -124,7 +144,7 @@ abstract class BackOff {
         }
 
         if ((await retryIf?.call(error)) == false) {
-          _isStopped = true;
+          _isProcessRunning = false;
           return Left(error);
         }
 
