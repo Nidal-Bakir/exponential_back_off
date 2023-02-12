@@ -1,6 +1,6 @@
 
-### Retry failing processes like HTTP requests using an exponential interval between each retry
----
+## Retry failing processes like HTTP requests using an exponential interval between each retry
+
 **Exponential backoff algorithm:**
 - An exponential backoff algorithm retries requests exponentially,
  increasing the waiting time between retries up to a maximum backoff time.
