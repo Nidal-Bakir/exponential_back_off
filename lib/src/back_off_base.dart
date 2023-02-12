@@ -78,7 +78,7 @@ abstract class BackOff {
     if (maxElapsedTime != null && nextDelay != null) {
       shouldStop |= _elapsedTime + nextDelay >= maxElapsedTime!;
     }
-    
+
     _isProcessRunning = !shouldStop;
     return shouldStop;
   }

@@ -1,11 +1,11 @@
 
 ### Retry failing processes like HTTP requests using an exponential interval between each retry
-
-Exponential backoff algorithm:
-: An exponential backoff algorithm retries requests exponentially,
+---
+**Exponential backoff algorithm:**
+- An exponential backoff algorithm retries requests exponentially,
  increasing the waiting time between retries up to a maximum backoff time.
 
-<img width="512" src="./digram_image.png"/>
+<img width="512" src="https://raw.githubusercontent.com/Nidal-Bakir/exponential_back_off/main/digram_image.png"/>
 
 ## Features
 
@@ -263,6 +263,7 @@ sleeping 1st, 2nd, 3rd, ..., 9th attempt: (will not sleep the 10th)
       }
       
       ```
+
   - Use it as you normally do
 
       ```dart
@@ -295,6 +296,4 @@ sleeping 1st, 2nd, 3rd, ..., 9th attempt: (will not sleep the 10th)
             print('--------------------------------------------------------');
           },
         );
-
-
       ```

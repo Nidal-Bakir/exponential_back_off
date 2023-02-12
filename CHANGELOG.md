@@ -1,3 +1,6 @@
+## v0.0.3
+
+- Improve the docs
 ## v0.0.2
 
 - Add tests
