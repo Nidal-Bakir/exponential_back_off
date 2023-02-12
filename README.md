@@ -53,7 +53,7 @@ final exponentialBackOff = ExponentialBackOff();
   );
 ```
 
-- Handle the result
+- Handle the result\
     You can handel the result in two ways:
   - By checking if the result `isLeft` or `isRight`. and get the value accordingly.
   - Using the fold function `result.fold((error){},(data){})`. The fold function
@@ -241,7 +241,7 @@ sleeping 1st, 2nd, 3rd, ..., 9th attempt: (will not sleep the 10th)
   - create a subclass from Backoff base class
 
       ```dart
-      /// linier delays: add se
+      /// linier delays:
       ///
       ///  1. 1000 ms
       ///  2. 2000 ms
@@ -263,7 +263,7 @@ sleeping 1st, 2nd, 3rd, ..., 9th attempt: (will not sleep the 10th)
       }
       
       ```
-  - Use it as normally do
+  - Use it as you normally do
 
       ```dart
         // Will be retried up-to 5 times,

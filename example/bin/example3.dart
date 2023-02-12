@@ -36,7 +36,7 @@ void main(List<String> arguments) async {
   );
 }
 
-/// linier delays: add se
+/// linier delays:
 ///
 ///  1. 1000 ms
 ///  2. 2000 ms
