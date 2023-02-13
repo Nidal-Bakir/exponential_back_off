@@ -10,12 +10,12 @@ void main(List<String> arguments) async {
   //
   //   randomPercent: 0.0%
   //
-  //  1. 200 ms    
-  //  2. 400 ms     
-  //  3. 800 ms    
-  //  4. 1600 ms    
+  //  1. 200 ms
+  //  2. 400 ms
+  //  3. 800 ms
+  //  4. 1600 ms
   //  5. 3200 ms   **will not sleep it**
- 
+
   final exponentialBackOff = ExponentialBackOff(
     interval: Duration(milliseconds: 100),
     maxAttempts: 5,
