@@ -4,11 +4,12 @@ import 'package:test/test.dart';
 
 import 'package:exponential_back_off/exponential_back_off.dart';
 
-class TextException implements Exception {
+class TestException implements Exception {
   final dynamic message;
 
-  TextException([this.message]);
+  TestException([this.message]);
 
+  @override
   String toString() {
     Object? message = this.message;
     if (message == null) return "TextException";
@@ -31,7 +32,7 @@ void main() {
     // act
     await expo.start(() {
       ++callCounter;
-      throw TextException('test throw');
+      throw TestException('test throw');
     });
 
     // assert
@@ -50,7 +51,7 @@ void main() {
     );
 
     // act
-    await expo.start(() => throw TextException('test throw'));
+    await expo.start(() => throw TestException('test throw'));
 
     // assert
     expect(expo.elapsedTime, lessThanOrEqualTo(maxElapsedTime));
@@ -74,7 +75,7 @@ void main() {
     // act
     await expo.start(() {
       ++callCounter;
-      throw TextException('test throw');
+      throw TestException('test throw');
     });
 
     // assert
@@ -165,7 +166,7 @@ void main() {
     // act
     expo.start(() {
       ++callCounter;
-      throw TextException('test throw');
+      throw TestException('test throw');
     });
     await Future.delayed(Duration(seconds: 2));
 
@@ -212,7 +213,7 @@ void main() {
 
     // act
     expo.start(() {
-      throw TextException('test throw');
+      throw TestException('test throw');
     });
     await Future.delayed(Duration(seconds: 2));
 
@@ -248,7 +249,7 @@ void main() {
       maxRandomizationFactor: 0.15,
     );
 
-    final exception = TextException('test throw');
+    final exception = TestException('test throw');
 
     // act
     final result = await expo.start(() {
@@ -326,7 +327,7 @@ void main() {
 
     final returnValue = 10;
     int callCounter = 0;
-    final exception = TextException('test throw');
+    final exception = TestException('test throw');
 
     // act
     final result = await expo.start<int>(() async {
@@ -367,7 +368,7 @@ void main() {
     await expo.start(
       () {
         ++callCounter;
-        throw TextException('test throw');
+        throw TestException('test throw');
       },
       onRetry: (error) {
         ++onRetryCallCounter;
@@ -433,7 +434,7 @@ void main() {
     int callCounter = 0;
     int retryIfCallCounter = 0;
 
-    final exception = TextException('test throw');
+    final exception = TestException('test throw');
     // act
     final result = await expo.start(
       () async {
@@ -452,7 +453,7 @@ void main() {
     expect(retryIfCallCounter, equals(1));
 
     expect(result, isA<Left>());
-    expect(result.getLeftValue(), isA<TextException>());
+    expect(result.getLeftValue(), isA<TestException>());
     expect(result.getLeftValue(), equals(exception));
   });
 
@@ -471,7 +472,7 @@ void main() {
     int callCounter = 0;
     int retryIfCallCounter = 0;
 
-    final exception = TextException('test throw');
+    final exception = TestException('test throw');
     // act
     final result = await expo.start(
       () async {
@@ -491,7 +492,7 @@ void main() {
     expect(retryIfCallCounter, equals(maxAttempts - 1));
 
     expect(result, isA<Left>());
-    expect(result.getLeftValue(), isA<TextException>());
+    expect(result.getLeftValue(), isA<TestException>());
     expect(result.getLeftValue(), equals(exception));
   });
 
@@ -513,7 +514,7 @@ void main() {
       int callCounter = 0;
       int retryIfCallCounter = 0;
 
-      final exception = TextException('test throw');
+      final exception = TestException('test throw');
 
       // act
       await expo.start(
