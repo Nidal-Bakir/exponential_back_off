@@ -8,7 +8,7 @@ on:
 jobs:
   publish:
     permissions:
-      id-token: write 
+      id-token: write
     runs-on: ubuntu-latest
     steps:
       - name: 📚 Git checkout
@@ -22,3 +22,8 @@ jobs:
 
       - name: 🚀 publish
         run: dart pub publish --force
+
+      - name: 🚀 Create release from tag for github releases
+        uses: ncipollo/release-action@v1.12.0
+        with:
+          tag: ${{ github.ref_name }}
