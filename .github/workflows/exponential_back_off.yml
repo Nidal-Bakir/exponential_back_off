@@ -7,11 +7,11 @@ on:
     branches: ["main"]
 
 jobs:
-  build:
+  test:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📚 Git Checkout
+      - name: 📚 Git checkout
         uses: actions/checkout@v3
 
       - name: 🐦 Setup Flutter
@@ -21,7 +21,7 @@ jobs:
           cache: true
       - run: flutter --version
 
-      - name: 📦 Install Dependencies
+      - name: 📦 Install dependencies
         run: dart pub get
       - name: 📦 Install example dependencies
         run: dart pub get --directory=./example
@@ -38,16 +38,16 @@ jobs:
       - name: 🎯 publish dry run
         run: dart pub publish --dry-run
 
-      - name: 📊 Check Code Coverage
+      - name: 📊 Check code coverage
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
           min_coverage: 95
           exclude: "**/example **/either.dart"
 
-      - name: 📦 Install Pana
+      - name: 📦 Install PANA
         run: flutter pub global activate pana
 
-      - name: 📊 Verify Pana Score
+      - name: 📊 Verify PANA score
         run: |
           PANA=$(pana . --no-warning); PANA_SCORE=$(echo $PANA | sed -n "s/.*Points: \([0-9]*\)\/\([0-9]*\)./\1\/\2/p")
           echo "Score: $PANA_SCORE"
