@@ -1,16 +1,15 @@
 name: exponential_back_off
 description: Implementation of exponential backoff algorithm using pure dart
-version: 0.1.0
+version: 0.1.0+1
 homepage: https://github.com/Nidal-Bakir/exponential_back_off
 repository: https://github.com/Nidal-Bakir/exponential_back_off.git
 
 dependencies:
   async: ^2.10.0
-  
+
 dev_dependencies:
   lints: ^2.0.1
   test: ^1.23.1
 
 environment:
   sdk: ">=2.17.0 <3.0.0"
-
