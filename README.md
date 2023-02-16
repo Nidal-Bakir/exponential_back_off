@@ -1,4 +1,4 @@
-
+[![exponential_back_off](https://github.com/Nidal-Bakir/exponential_back_off/actions/workflows/exponential_back_off.yml/badge.svg)](https://github.com/Nidal-Bakir/exponential_back_off/actions/workflows/exponential_back_off.yml)
 ## Retry failing processes like HTTP requests using an exponential interval between each retry
 
 **Exponential backoff algorithm:**
