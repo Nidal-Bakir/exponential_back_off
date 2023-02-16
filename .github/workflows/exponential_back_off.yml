@@ -1,0 +1,55 @@
+name: exponential_back_off
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 📚 Git Checkout
+        uses: actions/checkout@v3
+
+      - name: 🐦 Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+      - run: flutter --version
+
+      - name: 📦 Install Dependencies
+        run: dart pub get
+      - name: 📦 Install example dependencies
+        run: dart pub get --directory=./example
+
+      - name: ✨ Verify formatting
+        run: dart format --output=none --set-exit-if-changed .
+
+      - name: 🕵️ Analyze project source
+        run: dart analyze --fatal-infos
+
+      - name: 🧪 Run tests
+        run: flutter test --coverage --concurrency=4
+
+      - name: 🎯 publish dry run
+        run: dart pub publish --dry-run
+
+      - name: 📊 Check Code Coverage
+        uses: VeryGoodOpenSource/very_good_coverage@v2
+        with:
+          min_coverage: 95
+          exclude: "**/example **/either.dart"
+
+      - name: 📦 Install Pana
+        run: flutter pub global activate pana
+
+      - name: 📊 Verify Pana Score
+        run: |
+          PANA=$(pana . --no-warning); PANA_SCORE=$(echo $PANA | sed -n "s/.*Points: \([0-9]*\)\/\([0-9]*\)./\1\/\2/p")
+          echo "Score: $PANA_SCORE"
+          IFS='/'; read -a SCORE_ARR <<< "$PANA_SCORE"; SCORE=SCORE_ARR[0];
+          if (( $SCORE < 120 )); then echo "The minimum score of 120 was not met!"; exit 1; fi
