@@ -1,3 +1,7 @@
+## v0.1.0+2
+
+- Improve the docs
+
 ## v0.1.0+1
 
 - Improve the docs
