@@ -1,7 +1,9 @@
-[![exponential_back_off](https://github.com/Nidal-Bakir/exponential_back_off/actions/workflows/exponential_back_off.yml/badge.svg)](https://github.com/Nidal-Bakir/exponential_back_off/actions/workflows/exponential_back_off.yml)
+[![exponential_back_off](https://github.com/Nidal-Bakir/exponential_back_off/actions/workflows/exponential_back_off.yml/badge.svg)](https://github.com/Nidal-Bakir/exponential_back_off/actions/workflows/exponential_back_off.yml) [![codecov](https://codecov.io/gh/Nidal-Bakir/exponential_back_off/branch/main/graph/badge.svg?token=WMK1RZQ2JE)](https://codecov.io/gh/Nidal-Bakir/exponential_back_off)
+
 ## Retry failing processes like HTTP requests using an exponential interval between each retry
 
 **Exponential backoff algorithm:**
+
 - An exponential backoff algorithm retries requests exponentially,
  increasing the waiting time between retries up to a maximum backoff time.
 
