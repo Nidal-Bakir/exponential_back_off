@@ -7,9 +7,12 @@ on:
 
 jobs:
   publish:
+    runs-on: ubuntu-latest
+
     permissions:
       id-token: write
-    runs-on: ubuntu-latest
+      contents: write
+
     steps:
       - name: 📚 Git checkout
         uses: actions/checkout@v3
