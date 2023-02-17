@@ -35,6 +35,9 @@ jobs:
       - name: 🧪 Run tests
         run: flutter test --coverage --concurrency=4
 
+      - name: 📊 Codecov
+        uses: codecov/codecov-action@v3.1.1
+
       - name: 🎯 publish dry run
         run: dart pub publish --dry-run
 
@@ -42,7 +45,7 @@ jobs:
         uses: VeryGoodOpenSource/very_good_coverage@v2
         with:
           min_coverage: 95
-          exclude: "**/example **/either.dart"
+          exclude: "**/example"
 
       - name: 📦 Install PANA
         run: flutter pub global activate pana
