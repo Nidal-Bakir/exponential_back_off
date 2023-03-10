@@ -14,8 +14,8 @@ assignees: ''
     Thanks for the contribution!
 -->
 
-- [ ] I am not disclosing a vulnerability
-- [ ] I am not just asking a question
+- [ ] I am not disclosing a vulnerability.
+- [ ] I am not just asking a question.
 - [ ] I have searched through [existing issues](https://github.com/Nidal-Bakir/exponential_back_off/issues).
 
 ### Current Limitation

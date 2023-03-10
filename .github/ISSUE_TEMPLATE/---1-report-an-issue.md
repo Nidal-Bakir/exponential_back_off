@@ -15,7 +15,7 @@ assignees: ''
 -->
 
 - [ ] I have searched through [existing issues](https://github.com/Nidal-Bakir/exponential_back_off/issues).
-- [ ] I can reproduce the issue with the latest version of [exponential_back_off](https://github.com/Nidal-Bakir/exponential_back_off/releases/latest) <!-- We don't investigate issues for outdated releases. -->
+- [ ] I can reproduce the issue with the latest version of [exponential_back_off](https://github.com/Nidal-Bakir/exponential_back_off/releases/latest). <!-- We don't investigate issues for outdated releases. -->
 
 ### Issue Description
 <!-- What is the specific issue? -->
